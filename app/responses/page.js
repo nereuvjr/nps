@@ -107,13 +107,9 @@ export default function ResponsesPage() {
     <div className="bg-gray-100 min-h-screen p-8">
       <div className="max-w-[1920px] mx-auto">
         <div className="flex justify-between items-center mb-8">
-          <Link
-            href="/surveys"
-            className="inline-flex items-center text-xl text-gray-700 hover:text-gray-900"
-          >
-            <ArrowLeft className="mr-2 h-8 w-8" />
-            Voltar para Pesquisas
-          </Link>
+          <h1 className="text-2xl font-bold text-gray-800">
+            Ranking de Pesquisa de Satisfação QR-Code
+          </h1>
 
           <div className="flex items-center gap-6">
             <div className="bg-blue-50 px-4 py-2 rounded-lg border-2 border-blue-100">
