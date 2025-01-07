@@ -70,7 +70,7 @@ async function fetchResponseDetails(responseId, apiKey, baseUrl) {
 async function fetchAllResponses(surveyId, apiKey, baseUrl) {
   const responses = [];
   let page = 1;
-  const limit = 100;
+  const limit = 1000; // Aumentado de 100 para 1000
   
   while (true) {
     const apiUrl = `${baseUrl}/management/responses?surveyId=${surveyId}&limit=${limit}&page=${page}`;
@@ -99,11 +99,6 @@ async function fetchAllResponses(surveyId, apiKey, baseUrl) {
     }
 
     page++;
-    
-    if (page > 10) {
-      console.warn('Reached maximum page limit');
-      break;
-    }
   }
 
   return responses;
@@ -148,6 +143,7 @@ export async function GET(request) {
       values: {},
       average: 0,
       weightedAverage: 0,
+      confidenceFactor: 0,
       npsScore: 0,
       promoters: 0,
       passives: 0,
@@ -185,6 +181,13 @@ export async function GET(request) {
     // Cálculo das métricas
     if (npsData.count > 0) {
       npsData.average = npsData.total / npsData.count;
+      
+      // Calcular fator de confiança
+      const MIN_RESPONSES = 1;
+      const MAX_RESPONSES = 30;
+      let confidenceFactor = (npsData.count - MIN_RESPONSES) / (MAX_RESPONSES - MIN_RESPONSES);
+      npsData.confidenceFactor = Math.max(0, Math.min(1, confidenceFactor)) * 100; // Converter para porcentagem
+      
       npsData.weightedAverage = calculateWeightedAverage(npsData);
       npsData.npsScore = calculateNPS(npsData);
     }

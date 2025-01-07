@@ -179,7 +179,7 @@ export default function ResponsesPage() {
           </div>
 
           {/* Remaining Surveys */}
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
             {surveys
               .filter(item => item?.summary?.npsData)
               .sort((a, b) => (b.summary.npsData.weightedAverage || 0) - (a.summary.npsData.weightedAverage || 0))
@@ -192,27 +192,118 @@ export default function ResponsesPage() {
                       <span className="font-bold text-gray-900">{survey.name}</span>
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="p-4">
-                    <div className="space-y-4">
-                      <div className="bg-blue-50 p-3 rounded-lg">
-                        <div className="text-4xl font-bold text-blue-800">
-                          {survey.summary.npsData.weightedAverage.toFixed(1)}
+                  <CardContent className="p-4 space-y-4">
+                    {/* Nota Final e Média Final */}
+                    <div className="grid grid-cols-2 gap-4">
+                      {/* Nota Final */}
+                      <div className="bg-blue-50 p-4 rounded-lg">
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <h3 className="text-lg font-semibold text-gray-800 mb-1">Nota Final</h3>
+                            <div className="text-5xl font-bold text-blue-800">
+                              {survey.summary.npsData.weightedAverage.toFixed(1)}
+                            </div>
+                            <div className="text-sm text-blue-600">
+                              Média Ponderada
+                            </div>
+                          </div>
+                          <Calculator className="h-6 w-6 text-blue-600" />
                         </div>
-                        <p className="text-lg text-blue-600">Nota Final</p>
+                        <div className="mt-2 text-sm text-blue-600">
+                          {survey.summary.npsData.count} avaliações
+                        </div>
                       </div>
-                      <div className="grid grid-cols-2 gap-3">
+
+                      {/* Média Final */}
+                      <div className="bg-purple-50 p-4 rounded-lg">
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <h3 className="text-lg font-semibold text-gray-800 mb-1">Média Final</h3>
+                            <div className="text-5xl font-bold text-purple-800">
+                              {survey.summary.npsData.average.toFixed(1)}
+                            </div>
+                            <div className="text-sm text-purple-600">
+                              Média Simples
+                            </div>
+                          </div>
+                          <Calculator className="h-6 w-6 text-purple-600" />
+                        </div>
+                        <div className="mt-2 text-sm text-purple-600">
+                          sem ponderação
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* NPS Score */}
+                    <div className="space-y-4">
+                      <div className="flex justify-between items-center">
+                        <h3 className="text-lg font-semibold text-gray-800">NPS Score</h3>
+                        <Star className="h-6 w-6 text-yellow-500" />
+                      </div>
+                      
+                      <div className="grid grid-cols-3 gap-3">
+                        <div className="bg-red-50 p-3 rounded-lg">
+                          <div className="text-xl font-bold text-red-700">
+                            {((survey.summary.npsData.detractors / survey.summary.npsData.count) * 100).toFixed(1)}%
+                          </div>
+                          <div className="text-sm text-red-800">Detratores</div>
+                          <div className="text-lg font-bold text-red-700">{survey.summary.npsData.detractors}</div>
+                        </div>
+                        <div className="bg-yellow-50 p-3 rounded-lg">
+                          <div className="text-xl font-bold text-yellow-700">
+                            {((survey.summary.npsData.passives / survey.summary.npsData.count) * 100).toFixed(1)}%
+                          </div>
+                          <div className="text-sm text-yellow-800">Neutros</div>
+                          <div className="text-lg font-bold text-yellow-700">{survey.summary.npsData.passives}</div>
+                        </div>
                         <div className="bg-green-50 p-3 rounded-lg">
-                          <div className="text-2xl font-bold text-green-800">
-                            {survey.summary.npsData.npsScore.toFixed(1)}%
+                          <div className="text-xl font-bold text-green-700">
+                            {((survey.summary.npsData.promoters / survey.summary.npsData.count) * 100).toFixed(1)}%
                           </div>
-                          <p className="text-base text-green-600">NPS Score</p>
+                          <div className="text-sm text-green-800">Promotores</div>
+                          <div className="text-lg font-bold text-green-700">{survey.summary.npsData.promoters}</div>
                         </div>
-                        <div className="bg-purple-50 p-3 rounded-lg">
-                          <div className="text-2xl font-bold text-purple-800">
-                            {survey.summary.npsData.count}
-                          </div>
-                          <p className="text-base text-purple-600">Respostas</p>
+                      </div>
+
+                      <div className="text-center">
+                        <div className="text-3xl font-bold text-gray-800">
+                          {survey.summary.npsData.npsScore.toFixed(1)}%
                         </div>
+                        <div className="text-sm text-gray-600">Score Final</div>
+                      </div>
+                    </div>
+
+                    {/* Stats Grid */}
+                    <div className="grid grid-cols-3 gap-3">
+                      <div className="bg-blue-50 p-3 rounded-lg">
+                        <div className="flex items-center gap-2 mb-1">
+                          <h4 className="text-sm font-medium text-blue-800">Completas</h4>
+                          <CheckCircle2 className="h-4 w-4 text-blue-600" />
+                        </div>
+                        <div className="text-2xl font-bold text-blue-700">{survey.summary.finished}</div>
+                        <p className="text-sm text-blue-600">finalizadas</p>
+                      </div>
+
+                      <div className="bg-green-50 p-3 rounded-lg">
+                        <div className="flex items-center gap-2 mb-1">
+                          <h4 className="text-sm font-medium text-green-800">Conclusão</h4>
+                          <CheckCircle2 className="h-4 w-4 text-green-600" />
+                        </div>
+                        <div className="text-2xl font-bold text-green-700">
+                          {((survey.summary.finished / survey.summary.total) * 100).toFixed(1)}%
+                        </div>
+                        <p className="text-sm text-green-600">taxa</p>
+                      </div>
+
+                      <div className="bg-purple-50 p-3 rounded-lg">
+                        <div className="flex items-center gap-2 mb-1">
+                          <h4 className="text-sm font-medium text-purple-800">Confiança</h4>
+                          <Star className="h-4 w-4 text-purple-600" />
+                        </div>
+                        <div className="text-2xl font-bold text-purple-700">
+                          {survey.summary.npsData.confidenceFactor.toFixed(1)}%
+                        </div>
+                        <p className="text-sm text-purple-600">fator</p>
                       </div>
                     </div>
                   </CardContent>
@@ -251,106 +342,125 @@ const TopSurveyCard = ({ survey, position }) => {
   const rankingPosition = `${position + 1}º`;
 
   return (
-    <Card className="bg-white shadow-xl border-2 hover:shadow-2xl transition-shadow">
-      <CardHeader className="border-b bg-gradient-to-r from-gray-100 to-white py-6">
-        <CardTitle className="flex items-center gap-4 text-3xl">
-          {rankingIcon}
+    <Card className="bg-white shadow-lg border-2 hover:shadow-xl transition-shadow">
+      <CardHeader className="border-b bg-gray-50 py-4">
+        <CardTitle className="flex items-center gap-3 text-xl">
           <span className={`${rankingColor} font-bold`}>{rankingPosition}</span>
           <span className="font-bold text-gray-900">{survey.name}</span>
         </CardTitle>
       </CardHeader>
-      <CardContent className="p-8">
-        <div className="space-y-8">
-          {/* Média Ponderada em destaque */}
-          <div className="bg-gradient-to-br from-blue-50 to-white p-6 rounded-xl border-2">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-2xl font-bold text-gray-800">Nota Final</h3>
-              <Calculator className="h-8 w-8 text-blue-600" />
-            </div>
-            <div className="flex items-center justify-between mb-6">
-              <span className="text-7xl font-bold text-blue-800">
-                {summary.npsData.weightedAverage.toFixed(1)}
-              </span>
-              <div className="text-right">
-                <div className="text-xl text-gray-600">
-                  {summary.npsData.count} avaliações
+      <CardContent className="p-4 space-y-4">
+        {/* Nota Final e Média Final */}
+        <div className="grid grid-cols-2 gap-4">
+          {/* Nota Final */}
+          <div className="bg-blue-50 p-4 rounded-lg">
+            <div className="flex justify-between items-start">
+              <div>
+                <h3 className="text-lg font-semibold text-gray-800 mb-1">Nota Final</h3>
+                <div className="text-5xl font-bold text-blue-800">
+                  {summary.npsData.weightedAverage.toFixed(1)}
                 </div>
-                <div className="text-lg text-blue-600 font-medium">
+                <div className="text-sm text-blue-600">
                   Média Ponderada
                 </div>
               </div>
+              <Calculator className="h-6 w-6 text-blue-600" />
+            </div>
+            <div className="mt-2 text-sm text-blue-600">
+              {summary.npsData.count} avaliações
             </div>
           </div>
 
-          {/* NPS Score */}
-          <div className="bg-gradient-to-br from-gray-50 to-white p-6 rounded-xl border-2">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-2xl font-bold text-gray-800">NPS Score</h3>
-              <Star className="h-8 w-8 text-yellow-500" />
+          {/* Média Final */}
+          <div className="bg-purple-50 p-4 rounded-lg">
+            <div className="flex justify-between items-start">
+              <div>
+                <h3 className="text-lg font-semibold text-gray-800 mb-1">Média Final</h3>
+                <div className="text-5xl font-bold text-purple-800">
+                  {summary.npsData.average.toFixed(1)}
+                </div>
+                <div className="text-sm text-purple-600">
+                  Média Simples
+                </div>
+              </div>
+              <Calculator className="h-6 w-6 text-purple-600" />
             </div>
-            <div className="grid grid-cols-3 gap-4">
-              <div className="bg-red-50 p-4 rounded-lg border-2 border-red-100">
-                <div className="text-2xl font-bold text-red-700">
-                  {((summary.npsData.detractors / summary.npsData.count) * 100).toFixed(1)}%
-                </div>
-                <div className="text-lg text-red-800">Detratores</div>
-                <div className="text-xl font-bold text-red-700">{summary.npsData.detractors}</div>
-              </div>
-              <div className="bg-yellow-50 p-4 rounded-lg border-2 border-yellow-100">
-                <div className="text-2xl font-bold text-yellow-700">
-                  {((summary.npsData.passives / summary.npsData.count) * 100).toFixed(1)}%
-                </div>
-                <div className="text-lg text-yellow-800">Neutros</div>
-                <div className="text-xl font-bold text-yellow-700">{summary.npsData.passives}</div>
-              </div>
-              <div className="bg-green-50 p-4 rounded-lg border-2 border-green-100">
-                <div className="text-2xl font-bold text-green-700">
-                  {((summary.npsData.promoters / summary.npsData.count) * 100).toFixed(1)}%
-                </div>
-                <div className="text-lg text-green-800">Promotores</div>
-                <div className="text-xl font-bold text-green-700">{summary.npsData.promoters}</div>
-              </div>
+            <div className="mt-2 text-sm text-purple-600">
+              sem ponderação
             </div>
-            <div className="mt-4 text-center">
-              <div className="text-4xl font-bold text-gray-800">
-                {summary.npsData.npsScore.toFixed(1)}%
+          </div>
+        </div>
+
+        {/* NPS Score */}
+        <div className="space-y-4">
+          <div className="flex justify-between items-center">
+            <h3 className="text-lg font-semibold text-gray-800">NPS Score</h3>
+            <Star className="h-6 w-6 text-yellow-500" />
+          </div>
+          
+          <div className="grid grid-cols-3 gap-3">
+            <div className="bg-red-50 p-3 rounded-lg">
+              <div className="text-xl font-bold text-red-700">
+                {((summary.npsData.detractors / summary.npsData.count) * 100).toFixed(1)}%
               </div>
-              <div className="text-lg text-gray-600">Score Final</div>
+              <div className="text-sm text-red-800">Detratores</div>
+              <div className="text-lg font-bold text-red-700">{summary.npsData.detractors}</div>
+            </div>
+            <div className="bg-yellow-50 p-3 rounded-lg">
+              <div className="text-xl font-bold text-yellow-700">
+                {((summary.npsData.passives / summary.npsData.count) * 100).toFixed(1)}%
+              </div>
+              <div className="text-sm text-yellow-800">Neutros</div>
+              <div className="text-lg font-bold text-yellow-700">{summary.npsData.passives}</div>
+            </div>
+            <div className="bg-green-50 p-3 rounded-lg">
+              <div className="text-xl font-bold text-green-700">
+                {((summary.npsData.promoters / summary.npsData.count) * 100).toFixed(1)}%
+              </div>
+              <div className="text-sm text-green-800">Promotores</div>
+              <div className="text-lg font-bold text-green-700">{summary.npsData.promoters}</div>
             </div>
           </div>
 
-          {/* Stats Grid */}
-          <div className="grid grid-cols-3 gap-6">
-            <div className="bg-blue-50 p-4 rounded-lg border-2 border-blue-100">
-              <div className="flex items-center justify-between mb-2">
-                <h4 className="text-xl font-medium text-blue-800">Completas</h4>
-                <CheckCircle2 className="h-8 w-8 text-blue-600" />
-              </div>
-              <div className="text-3xl font-bold text-blue-700">{summary.finished}</div>
-              <p className="text-lg text-blue-600">finalizadas</p>
+          <div className="text-center">
+            <div className="text-3xl font-bold text-gray-800">
+              {summary.npsData.npsScore.toFixed(1)}%
             </div>
+            <div className="text-sm text-gray-600">Score Final</div>
+          </div>
+        </div>
 
-            <div className="bg-green-50 p-4 rounded-lg border-2 border-green-100">
-              <div className="flex items-center justify-between mb-2">
-                <h4 className="text-xl font-medium text-green-800">Conclusão</h4>
-                <CheckCircle2 className="h-8 w-8 text-green-600" />
-              </div>
-              <div className="text-3xl font-bold text-green-700">
-                {((summary.finished / summary.total) * 100).toFixed(1)}%
-              </div>
-              <p className="text-lg text-green-600">taxa</p>
+        {/* Stats Grid */}
+        <div className="grid grid-cols-3 gap-3">
+          <div className="bg-blue-50 p-3 rounded-lg">
+            <div className="flex items-center gap-2 mb-1">
+              <h4 className="text-sm font-medium text-blue-800">Completas</h4>
+              <CheckCircle2 className="h-4 w-4 text-blue-600" />
             </div>
+            <div className="text-2xl font-bold text-blue-700">{summary.finished}</div>
+            <p className="text-sm text-blue-600">finalizadas</p>
+          </div>
 
-            <div className="bg-purple-50 p-4 rounded-lg border-2 border-purple-100">
-              <div className="flex items-center justify-between mb-2">
-                <h4 className="text-xl font-medium text-purple-800">Média</h4>
-                <Calculator className="h-8 w-8 text-purple-600" />
-              </div>
-              <div className="text-3xl font-bold text-purple-700">
-                {summary.npsData.average.toFixed(1)}
-              </div>
-              <p className="text-lg text-purple-600">simples</p>
+          <div className="bg-green-50 p-3 rounded-lg">
+            <div className="flex items-center gap-2 mb-1">
+              <h4 className="text-sm font-medium text-green-800">Conclusão</h4>
+              <CheckCircle2 className="h-4 w-4 text-green-600" />
             </div>
+            <div className="text-2xl font-bold text-green-700">
+              {((summary.finished / summary.total) * 100).toFixed(1)}%
+            </div>
+            <p className="text-sm text-green-600">taxa</p>
+          </div>
+
+          <div className="bg-purple-50 p-3 rounded-lg">
+            <div className="flex items-center gap-2 mb-1">
+              <h4 className="text-sm font-medium text-purple-800">Confiança</h4>
+              <Star className="h-4 w-4 text-purple-600" />
+            </div>
+            <div className="text-2xl font-bold text-purple-700">
+              {summary.npsData.confidenceFactor.toFixed(1)}%
+            </div>
+            <p className="text-sm text-purple-600">fator</p>
           </div>
         </div>
       </CardContent>
